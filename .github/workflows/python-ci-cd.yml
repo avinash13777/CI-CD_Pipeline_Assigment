@@ -1,0 +1,60 @@
+name: Flask CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+  release:
+    types: [published]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Syntax Check
+        run: |
+          source venv/bin/activate
+          python -m py_compile app.py
+
+      - name: Build Application
+        run: |
+          echo "Application build completed."
+
+  deploy-staging:
+    if: github.ref == 'refs/heads/staging'
+    needs: build-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Staging
+        run: |
+          echo "Deploying application to STAGING..."
+          echo "Deployment completed."
+
+  deploy-production:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Production
+        run: |
+          echo "Deploying application to PRODUCTION..."
+          echo "Deployment completed."
