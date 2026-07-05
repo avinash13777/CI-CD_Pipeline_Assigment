@@ -6,23 +6,32 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Installing Python dependencies...'
-                sh 'python3 -m pip install --upgrade pip'
-                sh 'pip3 install -r requirements.txt'
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    python -m pip install --upgrade pip
+                    pip install -r requirements.txt
+                '''
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running Unit Tests...'
-                sh 'pytest test_app.py'
+                sh '''
+                    . venv/bin/activate
+                    pytest test_app.py
+                '''
             }
         }
 
         stage('Deploy') {
             steps {
                 echo 'Deploying Flask Application...'
-                sh 'chmod +x start_flask.sh'
-                sh './start_flask.sh'
+                sh '''
+                    chmod +x start_flask.sh
+                    ./start_flask.sh
+                '''
             }
         }
     }
