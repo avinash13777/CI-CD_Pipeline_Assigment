@@ -11,6 +11,8 @@ pipeline {
                     . venv/bin/activate
                     python -m pip install --upgrade pip
                     pip install -r requirements.txt
+                     echo mongodb+srv://avinash13777_db_user:I85a0fb9rq6SbXWN@cluste01.pwgiqoe.mongodb.net/StudentsDB > .env
+                     echo "SECRET_KEY=mysecretkey" >> .env
                 '''
             }
         }
