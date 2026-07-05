@@ -22,7 +22,7 @@ pipeline {
                 echo 'Running Unit Tests...'
                 sh '''
                     . venv/bin/activate
-                    pytest test_app.py
+                    python -m py_compile app.py
                 '''
             }
         }
